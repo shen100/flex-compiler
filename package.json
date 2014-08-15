@@ -1,0 +1,35 @@
+{
+  "name": "flex-compiler",
+  "version": "0.0.9",
+  "main": "flex_compiler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": {
+    "name": "shen100"
+  },
+  "dependencies": {
+    "iconv-lite": "0.4.4"
+  },
+  "description": "A Node.js module to compile Flex/ActionScript/MXML apps with the compiler from the Apache/Adobe Flex SDK.",
+  "keywords": [
+    "flash",
+    "flex",
+    "as3",
+    "mxmlc",
+    "compc",
+    "compiler"
+  ],
+  "repository": {
+    "type":"git",
+    "url":"https://github.com/shen100/flex-compiler"
+  },
+  "maintainers": [
+    {
+      "name": "shen100",
+      "email": "liushen_shen@163.com"
+    }
+  ],
+  "directories": {},
+  "readmeFilename": "README.md"
+}
