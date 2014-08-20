@@ -10,7 +10,8 @@ function FlexCompiler() {
 }
 
 FlexCompiler.prototype.mxmlc = function(params, callback) {
-  var path       = require('path');
+  var path = require('path');
+  var os   = require('os');
   var swfWidth   = 680;
   var swfHeight  = 515;
   var frameRate  = 30;
@@ -69,11 +70,26 @@ FlexCompiler.prototype.mxmlc = function(params, callback) {
   var opts = {
     cwd: path.join(params.flexSDKPath, 'bin')
   };
-  var child = require('child_process').spawn('./mxmlc', cmdArgs, opts);
+  var theMxmlc;
+  switch(os.platform()) {
+    case 'win32': {
+      theMxmlc = 'mxmlc';
+      break;
+    }
+    case 'linux': {
+      theMxmlc = './mxmlc';
+      break;
+    }
+    case 'darwin': {
+      theMxmlc = './mxmlc';
+      break;
+    }
+  }
+  var child = require('child_process').spawn(theMxmlc, cmdArgs, opts);
   child.stdout.on('data', function (data) {
     if(params.isLog) {
       var iconv = require('iconv-lite');
-      var str = iconv.decode(data, 'gbk');
+      var str   = iconv.decode(data, 'gbk');
       console.log(str);
     }
   });
@@ -85,9 +101,6 @@ FlexCompiler.prototype.mxmlc = function(params, callback) {
     var iconv = require('iconv-lite');
     var str   = iconv.decode(data, 'gbk');
     msg += str;
-    if(params.isLog) {
-      console.log(str);
-    }
     isError = true;
   });
 
