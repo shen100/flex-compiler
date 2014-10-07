@@ -45,6 +45,16 @@ FlexCompiler.prototype.mxmlc = function(params, callback) {
   cmdArgs.push('-default-frame-rate');
   cmdArgs.push(theFrameRate);
 
+  if(params.conditional && params.conditional.constructor == Array) {
+    var conditional = params.conditional;
+    for (i = 0; i < conditional.length; i++) {
+      var namespace = conditional[i].namespace;
+      var varName   = conditional[i].varName;
+      var value     = conditional[i].value;
+      cmdArgs.push('-define+=' + (namespace + '::' + varName + ',' + value));
+    }
+  }
+
   if( !(params.staticLinkLib === false) ) {
     cmdArgs.push('-static-link-runtime-shared-libraries=true');
   }
