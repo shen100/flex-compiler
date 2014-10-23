@@ -17,6 +17,9 @@ FlexCompiler.prototype.mxmlc = function(params, callback) {
   var frameRate  = 30;
   var cmdArgs    = [];
   var i;
+  if(params.debug) {
+    cmdArgs.push('-debug=true');
+  }
   if(params.sourcePath) {
     for (i = 0; i < params.sourcePath.length; i++) {
       cmdArgs.push('-source-path'); 
