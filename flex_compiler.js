@@ -5,6 +5,8 @@
  * Create: 2014-08-05 13:50:16
  * */
 
+var fs = require('fs');
+
 function FlexCompiler() {
 
 }
@@ -84,53 +86,51 @@ FlexCompiler.prototype.mxmlc = function(params, callback) {
     cwd: path.join(params.flexSDKPath, 'bin')
   };
   var theMxmlc;
-  switch(os.platform()) {
-    case 'win32': {
-      theMxmlc = 'mxmlc';
-      break;
-    }
-    case 'linux': {
-      theMxmlc = './mxmlc';
-      break;
-    }
-    case 'darwin': {
-      theMxmlc = './mxmlc';
-      break;
-    }
+  if (os.platform() === 'win32') {
+    theMxmlc = 'mxmlc';
+  } else {
+    theMxmlc = './mxmlc';
   }
-  var child = require('child_process').spawn(theMxmlc, cmdArgs, opts);
-  child.stdout.on('data', function (data) {
-    if(params.isLog) {
+
+  fs.stat(opts.cwd, function(err, stats) {
+    if (err || !stats.isDirectory()) {
+      return callback(new Error('not found flex sdk'));
+    }
+    var child = require('child_process').spawn(theMxmlc, cmdArgs, opts);
+    child.stdout.on('data', function (data) {
+      if(params.isLog) {
+        var iconv = require('iconv-lite');
+        var str   = iconv.decode(data, 'gbk');
+        console.log(str);
+      }
+    });
+    
+    var isError;
+    var msg = '';
+
+    child.stderr.on('data', function (data) {
       var iconv = require('iconv-lite');
       var str   = iconv.decode(data, 'gbk');
-      console.log(str);
-    }
-  });
-  
-  var isError;
-  var msg = '';
+      msg += str;
+      isError = true;
+    });
 
-  child.stderr.on('data', function (data) {
-    var iconv = require('iconv-lite');
-    var str   = iconv.decode(data, 'gbk');
-    msg += str;
-    isError = true;
-  });
+    child.on('exit', function (code, signal) {
+      if(isError) {
+        if(params.isLog) {
+          console.log('mxmlc error');
+          console.log(msg);
+        }
+        var err = new Error(msg);
+        callback(err); 
+      }else {
+        if(params.isLog) {
+          console.log('mxmlc complete');
+        }
+        callback(null);
+      }
+    });
 
-  child.on('exit', function (code, signal) {
-    if(isError) {
-      if(params.isLog) {
-        console.log('mxmlc error');
-        console.log(msg);
-      }
-      var err = new Error(msg);
-      callback(err); 
-    }else {
-      if(params.isLog) {
-        console.log('mxmlc complete');
-      }
-      callback(null);
-    }
   });
 }
 

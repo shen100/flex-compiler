@@ -1,6 +1,6 @@
 {
   "name": "flex-compiler",
-  "version": "0.0.12",
+  "version": "0.1.0",
   "main": "flex_compiler.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
